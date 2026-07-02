@@ -1,0 +1,31 @@
+name: Explorando Triggers
+
+on:
+  push:
+    branches:
+      - aprendiendo-github-actions
+
+  pull_request:
+    branches:
+      - main
+
+  issues:
+    types:
+      - opened
+
+  issue_comment:
+    types:
+      - created
+
+  workflow_dispatch:
+
+jobs:
+  mostrar-evento:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mostrar qué evento activó el workflow
+        run: echo "Este workflow fue ejecutado por el evento ${{ github.event_name }}"
+
+      - name: Mostrar la rama o referencia
+        run: echo "Referencia actual: ${{ github.ref }}"
