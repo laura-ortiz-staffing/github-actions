@@ -1,31 +1,70 @@
-name: Explorando Triggers
+name: Triggers workflow
+
+run-name: estoy aprendiendo a usar diferentes triggers
 
 on:
   push:
     branches:
-      - aprendiendo-github-actions
+      - master
 
   pull_request:
-    branches:
-      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - "**/*.py"
 
   issues:
     types:
-      - opened
-
-  issue_comment:
-    types:
-      - created
+      - labeled
 
   workflow_dispatch:
+    inputs:
+      lenguaje_favorito:
+        description: "Elige tu lenguaje favorito"
+        required: true
+        default: "Python"
+        type: choice
+        options:
+          - Python
+          - JavaScript
+          - Go
+      nombre:
+        description: "Escribe tu nombre"
+        required: true
+        default: "Juan"
+        type: string
+
+  schedule:
+    - cron: "15 22 * * *"
 
 jobs:
-  mostrar-evento:
+  hola-mundo-manual:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+
+    env:
+      LENGUAJE_FAVORITO: ${{ inputs.lenguaje_favorito }}
+      NOMBRE: ${{ inputs.nombre }}
+
+    steps:
+      - name: Mostrar inputs
+        run: |
+          echo "Lenguaje favorito: $LENGUAJE_FAVORITO"
+          echo "Nombre: $NOMBRE"
+
+      - name: Ejecutar saludo con Python
+        run: |
+          python -c "print('Hola, mundo, desde Python, soy ${{ inputs.nombre }}')"
+
+  hola-mundo-automatico:
+    if: ${{ github.event_name != 'workflow_dispatch' }}
     runs-on: ubuntu-latest
 
     steps:
-      - name: Mostrar qué evento activó el workflow
+      - name: Mostrar evento que disparó el workflow
         run: echo "Este workflow fue ejecutado por el evento ${{ github.event_name }}"
 
-      - name: Mostrar la rama o referencia
-        run: echo "Referencia actual: ${{ github.ref }}"
+      - name: Hola mundo automatico
+        run: echo "Hola mundo desde un trigger automatico"
