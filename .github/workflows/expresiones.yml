@@ -1,0 +1,43 @@
+name: Paso 3 - Expresiones
+
+run-name: Aprendiendo expresiones con ${{ github.actor }}
+
+on:
+  push:
+    branches:
+      - aprendiendo-github-actions
+  workflow_dispatch:
+    inputs:
+      nombre:
+        description: "Escribe tu nombre"
+        required: true
+        default: "Laura"
+        type: string
+
+jobs:
+  expresiones:
+    runs-on: ubuntu-latest
+
+    env:
+      USUARIO_GITHUB: ${{ github.actor }}
+      RAMA_ACTUAL: ${{ github.ref_name }}
+      EVENTO: ${{ github.event_name }}
+
+    steps:
+      - name: Mostrar contexto de GitHub
+        run: |
+          echo "Usuario que ejecutó el workflow: $USUARIO_GITHUB"
+          echo "Rama actual: $RAMA_ACTUAL"
+          echo "Evento que disparó el workflow: $EVENTO"
+
+      - name: Usar input manual
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: echo "Hola ${{ inputs.nombre }}, ejecutaste este workflow manualmente"
+
+      - name: Usar expresión condicional
+        if: ${{ github.actor == 'laura-ortiz-staffing' }}
+        run: echo "Este workflow fue ejecutado por Laura"
+
+      - name: Usar función contains
+        if: ${{ contains(github.ref, 'aprendiendo-github-actions') }}
+        run: echo "Estamos trabajando en la rama correcta"
