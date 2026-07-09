@@ -1,0 +1,22 @@
+name: Contexto
+
+run-name: ¡Estoy aprendiendo a usar Contextos!
+
+on: push
+
+jobs:
+  check-branch:
+    if: ${{ github.ref == 'refs/heads/aprendiendo-github-actions' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Mostrar rama actual
+        run: echo "Estoy ejecutando el workflow en la rama $GITHUB_REF"
+
+      - name: Mostrar información del contexto github
+        run: |
+          echo "Repositorio: ${{ github.repository }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Evento: ${{ github.event_name }}"
+          echo "Rama: ${{ github.ref }}"
+          echo "SHA del commit: ${{ github.sha }}"
